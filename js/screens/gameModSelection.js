@@ -51,5 +51,5 @@ export function renderGameModeSelection(root = document.getElementById('app')) {
 
 	return { root, bg, title, buttonsWrap };
 }
-// Nota: El arranque de la app ahora se centraliza en home.js/main.js
+
 
