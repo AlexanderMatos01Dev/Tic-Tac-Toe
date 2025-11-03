@@ -1,1 +1,21 @@
 /* Animaciones globales y transiciones reutilizables */
+
+@keyframes markerSwapPulse {
+	0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+	40% { transform: scale(1.06); }
+	70% { transform: scale(0.98); }
+	100% { transform: scale(1); }
+}
+
+/* Clase de animación para el cambio de signo en el header */
+.mark-swap .player-avatar,
+.mark-swap .player-marker {
+	animation: markerSwapPulse 0.35s ease;
+}
+
+/* Suaviza el cambio de colores en outline y nombre */
+.player-info .player-avatar,
+.player-info .player-marker,
+.player-info .player-name {
+	transition: box-shadow 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
