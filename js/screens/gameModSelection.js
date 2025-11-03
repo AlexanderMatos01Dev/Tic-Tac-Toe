@@ -38,8 +38,7 @@ export function renderGameModeSelection(root = document.getElementById('app')) {
 			}});
 
 			const pvcBtn = createButton({ text: 'JUGADOR VS CPU', className: 'secondary', onClick: () => {
-				// future: navigateTo('playerVsCpu', root)
-				console.log('Ir a Player vs CPU');
+				navigateTo('playerVsCpu', root);
 			}});
 
 		buttonsWrap.appendChild(pvpBtn);

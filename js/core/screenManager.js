@@ -1,8 +1,9 @@
 const screens = {
   gameModeSelection: () => import('../screens/gameModSelection.js'),
   playerVsPlayer: () => import('../screens/playerVsPlayer.js'),
+  playerVsCpu: () => import('../screens/playerVsCpu.js'),
+  loading: () => import('../screens/loading.js'),
   game: () => import('../screens/game.js'),
-  // future: playerVsCpu: () => import('../screens/playerVsCpu.js'),
 };
 
 export async function navigateTo(name, root = document.getElementById('app')) {
@@ -16,6 +17,8 @@ export async function navigateTo(name, root = document.getElementById('app')) {
     // buscar función render estándar según naming convention
     const renderer = mod.renderPlayerVsPlayer 
       || mod.renderGameModeSelection 
+      || mod.renderPlayerVsCpu
+      || mod.renderLoading
       || mod.renderGame
       || mod.default 
       || null;

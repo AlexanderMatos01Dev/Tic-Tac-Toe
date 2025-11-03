@@ -1,1 +1,71 @@
 // Formulario para jugador vs CPU
+import { createBackground } from '../components/background.js';
+import { createTitle } from '../components/title.js';
+import { createButton } from '../components/button.js';
+import { navigateTo } from '../core/screenManager.js';
+
+export function renderPlayerVsCpu(root = document.getElementById('app')) {
+  if (!root) throw new Error('Contenedor principal no encontrado');
+
+  root.innerHTML = '';
+  root.className = 'screen-container';
+
+  const bg = createBackground({ imagePath: 'assets/images/Background-Image.png', alt: 'Background' });
+  root.appendChild(bg);
+
+  const content = document.createElement('div');
+  content.className = 'vstack';
+  content.style.zIndex = 2;
+
+  const contentWrapper = document.createElement('div');
+  contentWrapper.className = 'screen-content';
+
+  // Title
+  const title = createTitle({ text: 'NOMBRAR JUGADORES', size: 'lg', level: 1 });
+  title.className = 'screen-title player-title';
+  contentWrapper.appendChild(title);
+
+  // Inputs holder - ahora solo un input
+  const holder = document.createElement('div');
+  holder.className = 'input-holder';
+
+  const input1 = document.createElement('input');
+  input1.className = 'player-input';
+  input1.placeholder = 'Nombrar Jugador';
+  input1.setAttribute('aria-label', 'Nombrar Jugador');
+  input1.type = 'text';
+
+  holder.appendChild(input1);
+
+  // Continue button
+  const continueWrap = document.createElement('div');
+  continueWrap.className = 'player-continue';
+  const startBtn = createButton({ 
+    text: 'INICIAR', 
+    className: 'secondary',
+    onClick: () => {
+      const player = input1.value.trim() || 'Jugador';
+      console.log('Iniciando juego vs CPU con:', player);
+      // Navegar a la pantalla de loading, que luego irá a game
+      navigateTo('loading', root);
+    }
+  });
+
+  continueWrap.appendChild(startBtn);
+  
+  // Agregar botón al holder para gap uniforme
+  holder.appendChild(continueWrap);
+  contentWrapper.appendChild(holder);
+
+  content.appendChild(contentWrapper);
+  root.appendChild(content);
+
+  return { root, bg, title, input1, startBtn };
+}
+
+// Auto-render if module loaded directly
+if (typeof window !== 'undefined' && document.readyState === 'complete') {
+  renderPlayerVsCpu();
+} else if (typeof window !== 'undefined') {
+  window.addEventListener('DOMContentLoaded', () => renderPlayerVsCpu());
+}

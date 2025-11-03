@@ -44,7 +44,7 @@ export function renderPlayerVsPlayer(root = document.getElementById('app')) {
   holder.appendChild(input1);
   holder.appendChild(input2);
 
-  // Continue button (same sizing rules as other buttons)
+
   const continueWrap = document.createElement('div');
   continueWrap.className = 'player-continue';
   const startBtn = createButton({ 
@@ -54,8 +54,8 @@ export function renderPlayerVsPlayer(root = document.getElementById('app')) {
       const player1 = input1.value.trim() || 'Jugador 1';
       const player2 = input2.value.trim() || 'Jugador 2';
       console.log('Iniciando juego con:', player1, player2);
-      // Navegar a la pantalla de juego
-      navigateTo('game', root);
+      // Navegar a la pantalla de loading, que luego irá a game
+      navigateTo('loading', root);
     }
   });
 
@@ -71,7 +71,6 @@ export function renderPlayerVsPlayer(root = document.getElementById('app')) {
   return { root, bg, title, input1, input2, startBtn };
 }
 
-// Auto-render if module loaded directly
 if (typeof window !== 'undefined' && document.readyState === 'complete') {
   renderPlayerVsPlayer();
 } else if (typeof window !== 'undefined') {

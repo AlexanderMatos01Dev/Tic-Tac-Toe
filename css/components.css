@@ -3,6 +3,7 @@
  :root {
   --brand-blue: #2AB4FD;
   --brand-orange: #EF9519;
+  --progress-orange: #EE9200;
 }
 
 /* Escala global para ajustar tamaño relativo de UI (0.0 - 1.0) */
@@ -21,10 +22,14 @@
 	--title-hero-line: calc(var(--title-base-line) * var(--ui-scale));
 
 	/* Player vs Player specific bases */
-	--player-title-base: 46px;
+	--player-title-base: 36px;
 	--player-placeholder-base: 25px;
 	--player-title-size: calc(var(--player-title-base) * var(--ui-scale));
 	--player-placeholder-size: calc(var(--player-placeholder-base) * var(--ui-scale));
+
+	/* Loading screen bases */
+	--loading-title-base: 151px;
+	--loading-title-size: calc(var(--loading-title-base) * var(--ui-scale));
 }
 
 
@@ -151,7 +156,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px; /* gap uniforme entre todos los elementos */
+  gap: 24px; 
   margin-top: 8px;
 }
 
@@ -179,4 +184,43 @@
 
 .player-continue {
   width: 100%;
+}
+
+/* Loading screen styles */
+.loading-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700; /* Bold */
+  font-size: var(--loading-title-size);
+  line-height: calc(var(--loading-title-size) * 1.1);
+  text-align: center;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+}
+
+.progress-container {
+  width: calc(797px * var(--ui-scale));
+  height: calc(86px * var(--ui-scale));
+  border: calc(4px * var(--ui-scale)) solid #FFFFFF;
+  position: relative;
+  box-sizing: border-box;
+  overflow: visible; 
+  display: flex;
+  align-items: center; 
+  padding: calc(4px * var(--ui-scale)); 
+}
+
+.progress-bar {
+  height: 100%; /* Ocupar toda la altura disponible después del padding */
+  background: var(--progress-orange);
+  width: 0%; /* Inicia en 0 */
+  transition: width 0.3s ease-out;
+  position: relative;
+  box-shadow: 0 0 20px rgba(238, 146, 0, 0.6), 
+              0 0 40px rgba(238, 146, 0, 0.4),
+              20px 0 30px rgba(238, 146, 0, 0.3); /* Glow que se extiende más a la derecha */
+}
+
+.progress-bar.loaded {
+  width: 100%; /* Llenar todo el ancho disponible dentro del contenedor */
 }
