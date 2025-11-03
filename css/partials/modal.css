@@ -18,7 +18,6 @@
   max-width: 92vw;
   max-height: 92vh;
   position: relative;
-  /* Ajuste de ruta: desde css/partials a assets/images son dos niveles */
   background: transparent url('../../assets/images/Modal-Background.png') 0% 0% no-repeat padding-box;
   background-size: cover;
   border-radius: 20px;
@@ -66,7 +65,7 @@
   margin-top: 33px;
 }
 
-/* Reutilizamos los botones, pero ajustamos tipografía en este modal */
+
 .restart-modal .modal-btn {
   font-size: 17px;
   font-weight: 700;
