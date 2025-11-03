@@ -2,7 +2,7 @@
 export function createTitle(options = {}) {
   const {
     text = 'TÍTULO',
-    size = 'md', // lg | md | sm
+    size = 'md',
     className = '',
     level = 1,
   } = options;
