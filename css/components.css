@@ -7,7 +7,7 @@
 
 /* Escala global para ajustar tamaño relativo de UI (0.0 - 1.0) */
 :root {
-	--ui-scale: 0.85; 
+	--ui-scale: 1; 
 	--button-base-width: 511px;
 	--button-base-height: 78px;
 	--button-base-font: 23px;
@@ -19,6 +19,12 @@
 	--button-font-size: calc(var(--button-base-font) * var(--ui-scale));
 	--title-hero-size: calc(var(--title-base-size) * var(--ui-scale));
 	--title-hero-line: calc(var(--title-base-line) * var(--ui-scale));
+
+	/* Player vs Player specific bases */
+	--player-title-base: 46px;
+	--player-placeholder-base: 25px;
+	--player-title-size: calc(var(--player-title-base) * var(--ui-scale));
+	--player-placeholder-size: calc(var(--player-placeholder-base) * var(--ui-scale));
 }
 
 
@@ -78,7 +84,7 @@
 .mode-buttons {
 	display: flex;
 	flex-direction: column;
-	gap: 35.55px; 
+	gap: 24px; 
 	margin-top: 12px; 
 	align-items: center;
 	width: 100%;
@@ -125,4 +131,52 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+
+/* Player vs Player (naming) styles */
+.player-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 900; /* Black */
+  font-size: var(--player-title-size);
+  line-height: calc(var(--player-title-size) * 1.2);
+  text-align: center; /* Centrado */
+  color: #ffffff;
+  text-transform: uppercase;
+  align-self: center; /* Centrado horizontalmente */
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.input-holder {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* gap uniforme entre todos los elementos */
+  margin-top: 8px;
+}
+
+.player-input {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  border: none;
+  padding: 20px 24px;
+  box-shadow: none;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--player-placeholder-size) * 0.95);
+  color: #222;
+}
+
+.player-input::placeholder {
+  color: #707070;
+  font-family: 'Roboto', sans-serif;
+  font-style: italic;
+  font-weight: 100; /* Thin */
+  font-size: var(--player-placeholder-size);
+}
+
+.player-continue {
+  width: 100%;
 }
