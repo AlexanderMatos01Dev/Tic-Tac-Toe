@@ -1,0 +1,63 @@
+/* Botones: de modo y de juego (icon button) */
+
+.mode-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+.mode-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: var(--button-height);
+  padding: 0 24px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 400;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: var(--button-font-size);
+  line-height: 28px;
+  box-sizing: border-box;
+}
+
+.mode-button .icon {
+  display:inline-flex;
+  width:24px;
+  height:24px;
+  align-items:center;
+  justify-content:center;
+}
+
+.mode-button.primary { background: var(--brand-blue); }
+.mode-button.secondary { background: var(--brand-orange); }
+
+/* Botones superiores del juego (Back / Restart) */
+.game-icon-button {
+  width: calc(var(--game-button-size) * var(--ui-scale));
+  height: calc(var(--game-button-size) * var(--ui-scale));
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+  z-index: 3;
+}
+
+.game-icon-button:hover { transform: scale(1.05); }
+.game-icon-button:active { transform: scale(0.95); }
+.game-icon-button.back { background: var(--button-back); }
+.game-icon-button.restart { background: var(--button-restart); }
+.game-icon-button svg { width: 60%; height: 60%; fill: white; }
+.game-icon-button.back { position: absolute; top: clamp(16px, 4vh, 24px); left: clamp(16px, 3vw, 40px); }
+.game-icon-button.restart { position: absolute; top: clamp(16px, 4vh, 24px); right: clamp(16px, 3vw, 40px); }

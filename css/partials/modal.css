@@ -1,0 +1,99 @@
+/* Modal de resultado (victoria/derrota/empate) */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.modal-overlay.open { opacity: 1; }
+
+.win-modal {
+  width: 680px;
+  height: 643px;
+  max-width: 92vw;
+  max-height: 92vh;
+  position: relative;
+  /* Ajuste de ruta: desde css/partials a assets/images son dos niveles */
+  background: transparent url('../../assets/images/Modal-Background.png') 0% 0% no-repeat padding-box;
+  background-size: cover;
+  border-radius: 20px;
+  box-shadow: 0px 8px 24px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 31.56px 24px 32px;
+}
+
+/* Modal de confirmación de reinicio */
+.restart-modal {
+  width: 680px;
+  height: 382px;
+  max-width: 92vw;
+  max-height: 92vh;
+  position: relative;
+  background: transparent url('../../assets/images/Reset-Background.png') 0% 0% no-repeat padding-box;
+  background-size: cover;
+  border-radius: 20px;
+  box-shadow: 0px 8px 24px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 24px 24px;
+}
+
+.restart-modal__title {
+  margin-top: 94.85px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.2;
+  color: #fff;
+  text-align: center;
+}
+
+.restart-modal__actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 23.09px;
+  margin-top: 33px;
+}
+
+/* Reutilizamos los botones, pero ajustamos tipografía en este modal */
+.restart-modal .modal-btn {
+  font-size: 17px;
+  font-weight: 700;
+  width: 192px;
+  height: 63px;
+  border-radius: 10px;
+}
+
+.win-modal__trophy {
+  width: 176px; height: 197px;
+  background: transparent no-repeat padding-box;
+  background-size: contain; background-position: center top;
+  margin-top: 0; margin-bottom: 35px;
+}
+
+.win-modal__title { width:100%; text-align:center; font-family:'Roboto', sans-serif; font-weight:700; font-size:48px; color:#fff; letter-spacing:1px; margin-bottom:0; }
+
+.win-modal__subtitle { width:100%; text-align:center; font-family:'Roboto', sans-serif; font-weight:300; font-size:31px; color:#fff; opacity:0.95; padding-top:10px; margin-bottom:10px; text-transform:uppercase; }
+
+.win-modal__scores { width:100%; display:flex; justify-content:center; align-items:center; gap:56px; color:#fff; font-family:'Roboto', sans-serif; text-align:center; }
+.summary-item { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.summary-item .parent { font-weight:700; font-size:43px; }
+.summary-item .child { font-weight:500; font-size:22px; }
+.summary-icon { width:54.166px; height:42.243px; margin-bottom:6px; }
+.summary-icon svg { width:100%; height:100%; display:block; }
+
+.win-modal__actions { width:100%; display:flex; justify-content:center; gap:28px; margin-top:28.51px; }
+.modal-btn { width:225px; height:74px; border:none; border-radius:15px; color:#fff; font-family:'Roboto', sans-serif; font-weight:700; font-size:22px; cursor:pointer; box-shadow:0px 3px 6px #00000029; }
+.modal-btn.orange { background:#EF9519; }
+.modal-btn.blue { background:#2AB4FD; }

@@ -1,0 +1,11 @@
+/* Fondo de pantalla reutilizable */
+
+.screen-background {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  z-index: 0;
+}
+/* Nota: reglas de layout (.screen-container, .vstack, .screen-content) se movieron a css/layout.css */

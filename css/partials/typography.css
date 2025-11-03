@@ -1,0 +1,20 @@
+/* Títulos y tipografías */
+
+.screen-title {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+}
+
+.screen-title--lg { font-size: 48px; font-weight: 700; }
+.screen-title--md { font-size: 32px; }
+.screen-title--sm { font-size: 20px; }
+.screen-title--hero {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: var(--title-hero-size);
+  line-height: var(--title-hero-line);
+}
