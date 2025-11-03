@@ -1,6 +1,7 @@
 import { createBackground } from '../components/background.js';
 import { createTitle } from '../components/title.js';
 import { createButton } from '../components/button.js';
+import { navigateTo } from '../core/screenManager.js';
 
 // Renderiza la pantalla de selección de modo de juego
 export function renderGameModeSelection(root = document.getElementById('app')) {
@@ -33,14 +34,13 @@ export function renderGameModeSelection(root = document.getElementById('app')) {
 		contentWrapper.className = 'screen-content';
 
 			const pvpBtn = createButton({ text: 'JUGADOR VS JUGADOR', className: 'primary', onClick: () => {
-		// Placeholder: aquí iría la navegación a player vs player
-		console.log('Ir a Player vs Player');
-	}});
+				navigateTo('playerVsPlayer', root);
+			}});
 
 			const pvcBtn = createButton({ text: 'JUGADOR VS CPU', className: 'secondary', onClick: () => {
-		// Placeholder: navegación a player vs CPU
-		console.log('Ir a Player vs CPU');
-	}});
+				// future: navigateTo('playerVsCpu', root)
+				console.log('Ir a Player vs CPU');
+			}});
 
 		buttonsWrap.appendChild(pvpBtn);
 		buttonsWrap.appendChild(pvcBtn);
