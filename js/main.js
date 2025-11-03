@@ -1,5 +1,5 @@
 // Punto de entrada, inicializa la app y controla navegación entre pantallas
-import { renderGameModeSelection } from './screens/gameModSelection.js';
+import { renderHome } from './screens/home.js';
 
 // Inicialización simple — por ahora solo renderizamos la pantalla de selección
 function init() {
@@ -10,7 +10,7 @@ function init() {
 		return;
 	}
 
-	renderGameModeSelection(app);
+	renderHome(app);
 }
 
 if (document.readyState === 'complete' || document.readyState === 'interactive') {

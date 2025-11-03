@@ -10,7 +10,7 @@ export function renderPlayerVsCpu(root = document.getElementById('app')) {
   root.innerHTML = '';
   root.className = 'screen-container';
 
-  const bg = createBackground({ imagePath: 'assets/images/Background-Image.png', alt: 'Background' });
+  const bg = createBackground({ imagePath: './assets/images/Background-Image.png', alt: 'Background' });
   root.appendChild(bg);
 
   const content = document.createElement('div');
@@ -46,6 +46,10 @@ export function renderPlayerVsCpu(root = document.getElementById('app')) {
     onClick: () => {
       const player = input1.value.trim() || 'Jugador';
       console.log('Iniciando juego vs CPU con:', player);
+      // Guardar datos del juego en sessionStorage
+      sessionStorage.setItem('gameMode', 'pvc');
+      sessionStorage.setItem('player1', player);
+      sessionStorage.setItem('player2', 'CPU');
       // Navegar a la pantalla de loading, que luego irá a game
       navigateTo('loading', root);
     }
@@ -62,10 +66,4 @@ export function renderPlayerVsCpu(root = document.getElementById('app')) {
 
   return { root, bg, title, input1, startBtn };
 }
-
-// Auto-render if module loaded directly
-if (typeof window !== 'undefined' && document.readyState === 'complete') {
-  renderPlayerVsCpu();
-} else if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', () => renderPlayerVsCpu());
-}
+// Nota: El arranque de la app ahora se centraliza en home.js/main.js

@@ -51,11 +51,5 @@ export function renderGameModeSelection(root = document.getElementById('app')) {
 
 	return { root, bg, title, buttonsWrap };
 }
-
-// Si este módulo se carga directamente en el navegador, renderiza automáticamente
-if (typeof window !== 'undefined' && document.readyState === 'complete') {
-	renderGameModeSelection();
-} else if (typeof window !== 'undefined') {
-	window.addEventListener('DOMContentLoaded', () => renderGameModeSelection());
-}
+// Nota: El arranque de la app ahora se centraliza en home.js/main.js
 

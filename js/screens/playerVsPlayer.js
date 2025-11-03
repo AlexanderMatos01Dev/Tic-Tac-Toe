@@ -54,6 +54,10 @@ export function renderPlayerVsPlayer(root = document.getElementById('app')) {
       const player1 = input1.value.trim() || 'Jugador 1';
       const player2 = input2.value.trim() || 'Jugador 2';
       console.log('Iniciando juego con:', player1, player2);
+      // Guardar datos del juego en sessionStorage
+      sessionStorage.setItem('gameMode', 'pvp');
+      sessionStorage.setItem('player1', player1);
+      sessionStorage.setItem('player2', player2);
       // Navegar a la pantalla de loading, que luego irá a game
       navigateTo('loading', root);
     }
@@ -70,9 +74,4 @@ export function renderPlayerVsPlayer(root = document.getElementById('app')) {
 
   return { root, bg, title, input1, input2, startBtn };
 }
-
-if (typeof window !== 'undefined' && document.readyState === 'complete') {
-  renderPlayerVsPlayer();
-} else if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', () => renderPlayerVsPlayer());
-}
+// Nota: El arranque de la app ahora se centraliza en home.js/main.js
