@@ -32,22 +32,14 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   // Botones superiores (Back y Restart) fijados en esquinas
   const backBtn = document.createElement('button');
   backBtn.className = 'game-icon-button back';
-  backBtn.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66.806 66.806">
-      <path d="M72.783,35.2H22.052L45.435,11.822,39.38,5.977l-33.4,33.4,33.4,33.4,5.845-5.845L22.052,43.555h50.73Z" transform="translate(-5.977 -5.977)" fill="#fff"/>
-    </svg>
-  `;
+  backBtn.innerHTML = `<img src="assets/images/Icon ionic-md-arrow-back.svg" alt="Atrás" />`;
   backBtn.addEventListener('click', () => {
     navigateTo('gameModeSelection', root);
   });
 
   const restartBtn = document.createElement('button');
   restartBtn.className = 'game-icon-button restart';
-  restartBtn.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60.195 60.195">
-      <path d="M35.722,58.3a22.573,22.573,0,0,1,0-45.146,21.868,21.868,0,0,1,15.8,6.772L39.485,31.96H65.82V5.625l-8.841,8.841a30.059,30.059,0,1,0,7.712,29.464H56.731A22.415,22.415,0,0,1,35.722,58.3Z" transform="translate(-5.625 -5.625)" fill="#fff"/>
-    </svg>
-  `;
+  restartBtn.innerHTML = `<img src="assets/images/Icon ionic-md-refresh.svg" alt="Reiniciar" />`;
   // El manejo real de reinicio se conecta más abajo
 
   // Botones van fuera del game-screen, en el contenedor raíz
@@ -172,17 +164,9 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   function setMarkerSVG(el, mark) {
     if (!el) return;
     if (mark === 'X') {
-      el.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21.141 21.135">
-          <path d="M24.361,21.856l7.551-7.551a1.769,1.769,0,0,0-2.5-2.5l-7.551,7.551L14.308,11.8a1.769,1.769,0,1,0-2.5,2.5l7.551,7.551-7.551,7.551a1.769,1.769,0,1,0,2.5,2.5l7.551-7.551,7.551,7.551a1.769,1.769,0,1,0,2.5-2.5Z" transform="translate(-11.285 -11.289)" fill="#535a72"/>
-        </svg>
-      `;
+      el.innerHTML = `<img src="assets/images/Icon ionic-ios-close.svg" alt="X" />`;
     } else {
-      el.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.825 26.825">
-          <path d="M 13.41259574890137 3.999996185302734 C 8.222465515136719 3.999996185302734 3.999996185302734 8.222465515136719 3.999996185302734 13.4125862121582 C 3.999996185302734 18.60270690917969 8.222465515136719 22.82517623901367 13.41259574890137 22.82517623901367 C 18.60272598266602 22.82517623901367 22.8251953125 18.60270690917969 22.8251953125 13.4125862121582 C 22.8251953125 8.222465515136719 18.60272598266602 3.999996185302734 13.41259574890137 3.999996185302734 M 13.41259574890137 -3.814697265625e-06 C 20.82016563415527 -3.814697265625e-06 26.8251953125 6.005016326904297 26.8251953125 13.4125862121582 C 26.8251953125 20.82015609741211 20.82016563415527 26.82517623901367 13.41259574890137 26.82517623901367 C 6.005025863647461 26.82517623901367 -3.814697265625e-06 20.82015609741211 -3.814697265625e-06 13.4125862121582 C -3.814697265625e-06 6.005016326904297 6.005025863647461 -3.814697265625e-06 13.41259574890137 -3.814697265625e-06 Z" fill="#25a0ed"/>
-        </svg>
-      `;
+      el.innerHTML = `<img src="assets/images/Path 6.svg" alt="O" />`;
     }
   }
 

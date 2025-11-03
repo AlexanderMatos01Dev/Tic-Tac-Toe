@@ -17,7 +17,7 @@
   max-width: 90vw;
   height: calc(var(--game-container-height) * var(--ui-scale));
   max-height: 70vh;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.25);
   box-shadow: 0px 3px 6px #00000029;
   border-radius: 34px;
   backdrop-filter: blur(32px);
@@ -73,7 +73,7 @@
   border-radius: 50%; background: white; display:flex; align-items:center; justify-content:center;
   border: 1.5px solid transparent; box-shadow: var(--marker-shadow);
 }
-.player-marker svg { width: 70%; height: 70%; }
+.player-marker svg, .player-marker img { width: 70%; height: 70%; display:block; }
 /* El borde del marcador pequeño sigue el color del signo actual */
 .player-info.has-x .player-marker { border-color: var(--x-outline); }
 .player-info.has-o .player-marker { border-color: var(--o-outline); }
@@ -101,4 +101,4 @@
 .game-cell { width: calc(var(--board-cell-size) * var(--ui-scale)); height: calc(var(--board-cell-size) * var(--ui-scale)); background:#FFFFFF; border-radius: calc(var(--board-cell-radius) * var(--ui-scale)); box-shadow: 0px 3px 6px #00000029; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: transform 0.1s ease, background 0.2s ease; }
 .game-cell:hover:not(.filled) { background: rgba(255,255,255,0.9); transform: scale(1.02); }
 .game-cell.filled { cursor: default; }
-.game-cell svg { width:60%; height:60%; max-width:56px; max-height:56px; }
+.game-cell svg, .game-cell img { width:60%; height:60%; max-width:56px; max-height:56px; display:block; }

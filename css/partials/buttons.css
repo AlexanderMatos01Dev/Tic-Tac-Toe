@@ -58,6 +58,6 @@
 .game-icon-button:active { transform: scale(0.95); }
 .game-icon-button.back { background: var(--button-back); }
 .game-icon-button.restart { background: var(--button-restart); }
-.game-icon-button svg { width: 60%; height: 60%; fill: white; }
+.game-icon-button svg, .game-icon-button img { width: 60%; height: 60%; display:block; }
 .game-icon-button.back { position: absolute; top: clamp(16px, 4vh, 24px); left: clamp(16px, 3vw, 40px); }
 .game-icon-button.restart { position: absolute; top: clamp(16px, 4vh, 24px); right: clamp(16px, 3vw, 40px); }
