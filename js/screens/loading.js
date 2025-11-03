@@ -2,13 +2,13 @@
 import { createBackground } from '../components/background.js';
 import { navigateTo } from '../core/screenManager.js';
 
-export function renderLoading(root = document.getElementById('app'), { nextScreen = 'game', duration = 2000 } = {}) {
+export function renderLoading(root = document.getElementById('app'), { nextScreen = 'game', duration = 300 } = {}) {
   if (!root) throw new Error('Contenedor principal no encontrado');
 
   root.innerHTML = '';
   root.className = 'screen-container';
 
-  const bg = createBackground({ imagePath: 'assets/images/Background-Image.png', alt: 'Background' });
+  const bg = createBackground({ imagePath: './assets/images/Background-Image.png', alt: 'Background' });
   root.appendChild(bg);
 
   const content = document.createElement('div');
@@ -34,14 +34,28 @@ export function renderLoading(root = document.getElementById('app'), { nextScree
   content.appendChild(progressContainer);
   root.appendChild(content);
 
-  // Animar la barra después de un pequeño delay
+  // Animar la barra inmediatamente para que transicione en 0.3s
   setTimeout(() => {
     progressBar.classList.add('loaded');
-  }, 100);
+  }, 0);
 
   // Navegar a la siguiente pantalla después de la duración
   setTimeout(() => {
-    navigateTo(nextScreen, root);
+    if (nextScreen === 'game') {
+      // Recuperar datos del juego desde sessionStorage
+      const gameMode = sessionStorage.getItem('gameMode') || 'pvp';
+      const player1 = sessionStorage.getItem('player1') || 'Jugador 1';
+      const player2 = sessionStorage.getItem('player2') || 'Jugador 2';
+      
+      // Cargar y renderizar el juego con los datos
+      import('./game.js').then(module => {
+        if (module.renderGame) {
+          module.renderGame(root, gameMode, { player1, player2 });
+        }
+      });
+    } else {
+      navigateTo(nextScreen, root);
+    }
   }, duration);
 
   return { root, bg, title, progressBar, progressContainer };
