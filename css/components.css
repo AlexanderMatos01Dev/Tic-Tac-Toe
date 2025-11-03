@@ -1,1 +1,128 @@
 /* Estilos compartidos (botones, modales, inputs, scoreboard) */
+
+ :root {
+  --brand-blue: #2AB4FD;
+  --brand-orange: #EF9519;
+}
+
+/* Escala global para ajustar tamaño relativo de UI (0.0 - 1.0) */
+:root {
+	--ui-scale: 0.85; 
+	--button-base-width: 511px;
+	--button-base-height: 78px;
+	--button-base-font: 23px;
+	--title-base-size: 69px;
+	--title-base-line: 91px;
+
+	--button-max-width: calc(var(--button-base-width) * var(--ui-scale));
+	--button-height: calc(var(--button-base-height) * var(--ui-scale));
+	--button-font-size: calc(var(--button-base-font) * var(--ui-scale));
+	--title-hero-size: calc(var(--title-base-size) * var(--ui-scale));
+	--title-hero-line: calc(var(--title-base-line) * var(--ui-scale));
+}
+
+
+.screen-background {
+	position: absolute;
+	inset: 0; 
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center center;
+	z-index: 0;
+}
+
+/* Contenedor principal de cada pantalla */
+.screen-container {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+.screen-container {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  display: grid;
+  place-items: center; 
+  overflow: hidden;
+}
+
+/* Título reutilizable centrado */
+.screen-title {
+	position: relative;
+	z-index: 2;
+	text-align: center;
+	color: #ffffff;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 700;
+}
+
+/* Opciones de tamaño para el título */
+.screen-title--lg { font-size: 48px; }
+.screen-title--md { font-size: 32px; }
+.screen-title--sm { font-size: 20px; }
+.screen-title--hero {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 400;
+	font-size: var(--title-hero-size);
+	line-height: var(--title-hero-line);
+}
+.screen-title--lg { font-size: 48px; font-weight: 700; }
+.screen-title--md { font-size: 32px; }
+.screen-title--sm { font-size: 20px; }
+
+
+.mode-buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 35.55px; 
+	margin-top: 12px; 
+	align-items: center;
+	width: 100%;
+}
+
+/* Botones  */
+.mode-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	width: 100%;
+	height: var(--button-height);
+	padding: 0 24px;
+	border: none;
+	border-radius: 12px;
+	cursor: pointer;
+	font-weight: 400; 
+	color: #fff;
+	font-family: 'Roboto', sans-serif;
+		font-size: var(--button-font-size);
+	line-height: 28px;
+	box-sizing: border-box;
+}
+
+.mode-button .icon {
+	display:inline-flex;
+	width:24px;
+	height:24px;
+	align-items:center;
+	justify-content:center;
+}
+
+.mode-button.primary { background: var(--brand-blue); }
+.mode-button.secondary { background: var(--brand-orange); }
+.mode-button.primary { background: var(--brand-blue); }
+.mode-button.secondary { background: var(--brand-orange); }
+
+.vstack { display:flex; flex-direction:column; align-items:center; gap:12px }
+
+/* Wrapper de contenido para controlar ancho/respnsividad manteniendo el ancho de diseño */
+.screen-content {
+	width: min(var(--button-max-width), 90vw); 
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
