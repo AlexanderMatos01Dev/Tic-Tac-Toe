@@ -21,7 +21,7 @@
   background: transparent url('../../assets/images/Modal-Background.png') 0% 0% no-repeat padding-box;
   background-size: cover;
   border-radius: 20px;
-  box-shadow: 0px 8px 24px rgba(0,0,0,0.4);
+ 
   display: flex;
   flex-direction: column;
   align-items: center;

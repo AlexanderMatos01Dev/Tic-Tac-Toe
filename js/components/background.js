@@ -1,6 +1,6 @@
 // Componente reutilizable para el fondo de pantalla
 export function createBackground(options = {}) {
-  const { imagePath = './assets/images/Background-Image.png', alt = '', className = '' } = options;
+const { imagePath = '../assets/images/Background-Image.png', alt = '', className = '' } = options;
 
   const el = document.createElement('div');
   el.className = `screen-background ${className}`.trim();
