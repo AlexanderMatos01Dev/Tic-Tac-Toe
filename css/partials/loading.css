@@ -29,9 +29,12 @@
   width: 0%;
   transition: width 0.3s ease-out;
   position: relative;
+  will-change: width;
   box-shadow: 0 0 20px rgba(238, 146, 0, 0.6),
               0 0 40px rgba(238, 146, 0, 0.4),
               20px 0 30px rgba(238, 146, 0, 0.3);
 }
 
-.progress-bar.loaded { width: 100%; }
+.progress-bar.loaded { 
+  width: 100%; 
+}
