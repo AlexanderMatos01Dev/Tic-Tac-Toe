@@ -1,117 +1,116 @@
-// Manejo de sesiones/partidas: crear o reanudar, ids, finalización
+// Session manager - handles creating, resuming, and managing game sessions
+import Storage from './storage.js';
+import { createGameId } from './utils.js';
 
-import { Storage } from './storage.js';
-import { createGameId, areSameParticipants } from './utils.js';
-import { checkWinner } from './gameRules.js';
+const SESSION_TIMEOUT = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-// Limpiar sesiones viejas (más de 7 días)
-function cleanOldSessions() {
-  const root = Storage.getRoot();
-  const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-  const entries = Object.entries(root.games || {});
-  
+// Clean up old sessions
+function cleanupOldSessions() {
+  const sessions = Storage.sessions.getAll();
+  const now = Date.now();
   let cleaned = false;
-  for (const [id, state] of entries) {
-    // Eliminar sesiones viejas o sesiones finalizadas sin jugadas
-    const isOld = (state.lastUpdated || 0) < sevenDaysAgo;
-    const isEmptyFinished = state.finished && state.board && state.board.every(cell => cell === null);
-    
-    if (isOld || isEmptyFinished) {
-      delete root.games[id];
+
+  for (const [id, session] of Object.entries(sessions)) {
+    if (session.lastUpdated && (now - session.lastUpdated) > SESSION_TIMEOUT) {
+      Storage.sessions.delete(id);
       cleaned = true;
     }
   }
-  
+
   if (cleaned) {
-    Storage.setRoot(root);
+    console.log('Cleaned up old sessions');
   }
 }
 
+// Create or resume a game session
 export function createOrResumeGame({ mode, players }) {
-  // Limpiar sesiones viejas primero
-  cleanOldSessions();
-  
-  const root = Storage.getRoot();
-  const p = { mode, p1Name: players.player1, p2Name: players.player2 };
+  cleanupOldSessions();
 
-  // Buscar partida no finalizada con los mismos participantes
-  const entries = Object.entries(root.games || {});
+  const sessions = Storage.sessions.getAll();
+  const p1 = players.player1 || 'Player 1';
+  const p2 = players.player2 || 'Player 2';
 
-  // Descartar partidas terminadas o con tablero ya decidido (por seguridad)
-  const candidates = entries
-    .filter(([_, state]) => {
-      if (!state) return false;
-      const decided = !!checkWinner(state.board);
-      return !state.finished && !decided;
-    })
-    // Preferir la más reciente
-    .sort((a, b) => (b[1].lastUpdated || 0) - (a[1].lastUpdated || 0));
-
-  // Solo reanudar si hay una partida activa (con jugadas hechas) de los mismos participantes
-  for (const [id, state] of candidates) {
-    if (areSameParticipants({ mode: state.mode, p1Name: state.players.p1Name, p2Name: state.players.p2Name }, p)) {
-      // Solo reanudar si hay jugadas hechas (al menos una celda ocupada)
-      const hasMovesPlayed = state.board && state.board.some(cell => cell !== null);
-      if (hasMovesPlayed) {
-        Storage.setCurrentGameId(id);
-        console.log(`Reanudando sesión: ${id}`);
-        return { id, state };
-      }
+  // Look for an active session with the same players and mode
+  for (const [id, session] of Object.entries(sessions)) {
+    if (session.mode === mode &&
+        session.players?.p1Name === p1 &&
+        session.players?.p2Name === p2 &&
+        !session.finished &&
+        session.board &&
+        session.board.some(cell => cell !== null)) { // Has moves played
+      console.log(`Resuming session: ${id}`);
+      setCurrentSessionId(id); // Set as current session
+      return { id, state: session };
     }
   }
 
-  // No hay partida activa → crear una nueva con ID único
-  const id = createGameId(p);
-  const state = null; // será creado por gameLogic
-  Storage.setCurrentGameId(id);
-  console.log(`Nueva sesión creada: ${id}`);
-  return { id, state };
+  // Create new session
+  const id = createGameId({ mode, p1Name: p1, p2Name: p2 });
+  setCurrentSessionId(id); // Set as current session
+  console.log(`Created new session: ${id}`);
+  return { id, state: null };
 }
 
-export function markFinished(gameState) {
-  const id = Storage.getCurrentGameId();
-  if (!id) return;
-  const state = { ...gameState, finished: true, lastUpdated: Date.now() };
-  Storage.saveGame(id, state);
+// Save current game state
+export function saveState(gameId, state) {
+  if (!gameId) return;
+  Storage.sessions.save(gameId, state);
 }
 
-export function saveState(gameState) {
-  const id = Storage.getCurrentGameId();
-  if (!id) return;
-  const state = { ...gameState, lastUpdated: Date.now() };
-  Storage.saveGame(id, state);
+// Mark a session as finished
+export function markFinished(gameId, finalState) {
+  if (!gameId) return;
+  const state = { ...finalState, finished: true, lastUpdated: Date.now() };
+  Storage.sessions.save(gameId, state);
+  // Clear current session ID since the game is finished
+  setCurrentSessionId(null);
 }
 
-// Función de utilidad para debugging - ver todas las sesiones
+// Get current session ID (if any)
+export function getCurrentSessionId() {
+  // For simplicity, we'll track this in a separate key
+  try {
+    return localStorage.getItem('game:currentSession') || null;
+  } catch {
+    return null;
+  }
+}
+
+// Set current session ID
+export function setCurrentSessionId(id) {
+  try {
+    if (id) {
+      localStorage.setItem('game:currentSession', id);
+    } else {
+      localStorage.removeItem('game:currentSession');
+    }
+  } catch (e) {
+    console.warn('Failed to set current session ID', e);
+  }
+}
+
+// List all sessions (for debugging)
 export function listAllSessions() {
-  const root = Storage.getRoot();
-  const entries = Object.entries(root.games || {});
-  
-  console.log('=== SESIONES GUARDADAS ===');
-  console.log(`Total: ${entries.length} sesiones`);
-  console.log(`Sesión actual: ${root.currentGameId || 'ninguna'}`);
-  console.log('');
-  
-  entries.forEach(([id, state]) => {
-    const hasMovesPlayed = state.board && state.board.some(cell => cell !== null);
-    const movesCount = state.board ? state.board.filter(cell => cell !== null).length : 0;
-    const status = state.finished ? '✓ Finalizada' : hasMovesPlayed ? '▶ En progreso' : '○ Sin jugadas';
-    const date = new Date(state.lastUpdated || 0).toLocaleString();
-    
-    console.log(`${status} | ${id}`);
-    console.log(`  Modo: ${state.mode} | ${state.players.p1Name} vs ${state.players.p2Name}`);
-    console.log(`  Jugadas: ${movesCount}/9 | Score: ${state.scoreboard.p1Wins}-${state.scoreboard.p2Wins}-${state.scoreboard.ties}`);
-    console.log(`  Última actualización: ${date}`);
-    console.log('');
-  });
-  
-  return entries;
+  const sessions = Storage.sessions.getAll();
+  console.log('=== GAME SESSIONS ===');
+  console.log(`Total: ${Object.keys(sessions).length}`);
+  console.log(`Current: ${getCurrentSessionId() || 'none'}`);
+
+  for (const [id, session] of Object.entries(sessions)) {
+    const status = session.finished ? 'Finished' : 'Active';
+    const moves = session.board ? session.board.filter(cell => cell !== null).length : 0;
+    const date = new Date(session.lastUpdated || 0).toLocaleString();
+    console.log(`${status} | ${id} | Moves: ${moves} | ${date}`);
+  }
+
+  return sessions;
 }
 
-// Función para limpiar todas las sesiones (útil para testing)
+// Clear all sessions
 export function clearAllSessions() {
-  Storage.clear();
-  console.log('Todas las sesiones han sido eliminadas');
+  Storage.sessions.clear();
+  setCurrentSessionId(null);
+  console.log('All sessions cleared');
 }
 
-export default { createOrResumeGame, markFinished, saveState, listAllSessions, clearAllSessions };
+export default { createOrResumeGame, saveState, markFinished, getCurrentSessionId, setCurrentSessionId, listAllSessions, clearAllSessions };
