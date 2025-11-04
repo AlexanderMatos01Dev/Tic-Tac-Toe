@@ -183,7 +183,7 @@ function createPlayerInfo(name, isCPU = false, sideClass = 'p1') {
 
   const avatar = document.createElement('div');
   avatar.className = `player-avatar ${sideClass}`;
-  avatar.textContent = isCPU ? 'CPU' : name.substring(0, 2).toUpperCase();
+  avatar.textContent = isCPU ? 'CPU' : getInitials(name);
 
   const markerEl = document.createElement('div');
   markerEl.className = `player-marker ${sideClass}`;

@@ -79,6 +79,22 @@
   background: transparent no-repeat padding-box;
   background-size: contain; background-position: center top;
   margin-top: 0; margin-bottom: 35px;
+  position: relative;
+}
+
+/* Brillo sutil debajo del trofeo / imagen de pérdida */
+.win-modal__trophy::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -10px;
+  width: 140px;
+  height: 22px;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0) 70%);
+  filter: blur(1px);
+  opacity: 0.9;
+  pointer-events: none;
 }
 
 .win-modal__title { width:100%; text-align:center; font-family:'Roboto', sans-serif; font-weight:700; font-size:48px; color:#fff; letter-spacing:1px; margin-bottom:0; }

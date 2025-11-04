@@ -33,16 +33,16 @@ export function renderGameModeSelection(root = document.getElementById('app')) {
 		const contentWrapper = document.createElement('div');
 		contentWrapper.className = 'screen-content';
 
-			const pvpBtn = createButton({ text: 'JUGADOR VS JUGADOR', className: 'primary', onClick: () => {
-				navigateTo('playerVsPlayer', root);
-			}});
-
-			const pvcBtn = createButton({ text: 'JUGADOR VS CPU', className: 'secondary', onClick: () => {
+			const pvcBtn = createButton({ text: 'JUGADOR VS CPU', className: 'primary', onClick: () => {
 				navigateTo('playerVsCpu', root);
 			}});
 
-		buttonsWrap.appendChild(pvpBtn);
+			const pvpBtn = createButton({ text: 'JUGADOR VS JUGADOR', className: 'secondary', onClick: () => {
+				navigateTo('playerVsPlayer', root);
+			}});
+
 		buttonsWrap.appendChild(pvcBtn);
+		buttonsWrap.appendChild(pvpBtn);
 
 		contentWrapper.appendChild(buttonsWrap);
 		content.appendChild(contentWrapper);
