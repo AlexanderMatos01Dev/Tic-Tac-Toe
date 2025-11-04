@@ -105,7 +105,5 @@ En la consola del navegador:
 - `TTT.listSessions()` — lista partidas guardadas
 - `TTT.clearSessions()` — limpia todas las partidas
 
-## Licencia
-
-MIT (o la que prefieras). Actualiza esta sección si corresponde.
+ 
 
