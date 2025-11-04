@@ -1,9 +1,9 @@
 // Lógica del tablero (turnos, ganador, empate, reinicio)
 
-import { Storage } from './storage.js';
+import Storage from './storage.js';
 import { getRandomMove } from './cpuLogic.js';
 import { checkWinner } from './gameRules.js';
-import { createOrResumeGame, saveState } from './sessionManager.js';
+import { createOrResumeGame, saveState, markFinished, getCurrentSessionId, setCurrentSessionId } from './sessionManager.js';
 
 function defaultState({ mode = 'pvp', players }) {
 	// Aleatorizar quién empieza (X u O)
@@ -41,21 +41,25 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 	const { state: existing, id: gameId } = createOrResumeGame({ mode, players });
 	let state = existing || defaultState({ mode, players });
 	
+	// Si es una partida reanudada, no aplicar delay extendido para CPU
+	const isResumed = !!existing;
+	
 	// Guardar estado inicial con el ID correcto
-	const currentId = Storage.getCurrentGameId();
+	const currentId = getCurrentSessionId();
 	if (currentId) {
-		Storage.saveGame(currentId, { ...state, lastUpdated: Date.now() });
+		saveState(currentId, { ...state, lastUpdated: Date.now() });
 	}
 
-	// Si cambian nombres explícitamente, respetarlos
-	if (players?.player1) state.players.p1Name = players.player1;
-	if (players?.player2) state.players.p2Name = players.player2;
+	// Si cambian nombres explícitamente Y no hay estado existente, respetarlos
+	if (players?.player1 && !existing) state.players.p1Name = players.player1;
+	if (players?.player2 && !existing) state.players.p2Name = players.player2;
 
 	// Timer único para el CPU
 	let cpuTimer = null;
 	let gameIsReady = false;
-	// Flag: ¿debemos aplicar el delay extendido en la PRIMERA jugada del CPU tras crear/reanudar?
-	let firstCpuMovePending = (state.mode === 'pvc') && (state.turnMark === (state.marks?.p2));
+	// Flag: ¿debemos aplicar el delay extendido en la PRIMERA jugada del CPU?
+	// Solo si es una nueva partida Y es turno del CPU
+	let firstCpuMovePending = !isResumed && (state.mode === 'pvc') && (state.turnMark === (state.marks?.p2));
 
 	function clearCpuTimer() {
 		if (cpuTimer) { clearTimeout(cpuTimer); cpuTimer = null; }
@@ -104,8 +108,8 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 			if (res.tie) {
 				state.scoreboard.ties += 1;
 				// Persistir como finalizada para que NO se reanude
-				const id = Storage.getCurrentGameId?.() || null;
-				if (id) Storage.saveGame(id, { ...state, finished: true, lastUpdated: Date.now() });
+				const id = getCurrentSessionId() || null;
+				if (id) saveState(id, { ...state, finished: true, lastUpdated: Date.now() });
 				onUpdate?.(cloneState());
 				// Pequeño feedback antes de anunciar
 				setTimeout(() => {
@@ -118,8 +122,8 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 			const winnerIsP1 = state.marks.p1 === winnerMark;
 			if (winnerIsP1) state.scoreboard.p1Wins += 1; else state.scoreboard.p2Wins += 1;
 			// Persistir como finalizada para que NO se reanude
-			const id = Storage.getCurrentGameId?.() || null;
-			if (id) Storage.saveGame(id, { ...state, finished: true, lastUpdated: Date.now() });
+			const id = getCurrentSessionId() || null;
+			if (id) saveState(id, { ...state, finished: true, lastUpdated: Date.now() });
 			onUpdate?.(cloneState());
 			setTimeout(() => {
 				onFinish?.({
@@ -135,8 +139,8 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 		// Cambiar turno y notificar
 		state.turnMark = state.turnMark === 'X' ? 'O' : 'X';
 		// Guardar estado actualizado
-		const id = Storage.getCurrentGameId?.() || null;
-		if (id) Storage.saveGame(id, { ...state, lastUpdated: Date.now() });
+		const id = getCurrentSessionId() || null;
+		if (id) saveState(id, { ...state, lastUpdated: Date.now() });
 		onUpdate?.(cloneState());
 
 		// EVENTO: después de cambiar turno, intentar que juegue el CPU
@@ -150,8 +154,8 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 		gameIsReady = false;
 		recomputeMarks(state);
 		// Guardar estado actualizado
-		const id = Storage.getCurrentGameId?.() || null;
-		if (id) Storage.saveGame(id, { ...state, lastUpdated: Date.now() });
+		const id = getCurrentSessionId() || null;
+		if (id) saveState(id, { ...state, lastUpdated: Date.now() });
 		onUpdate?.(cloneState());
 		// NO programar CPU aquí - esperar evento de "juego listo"
 	}
@@ -164,8 +168,8 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 		// Siempre inicia 'X' en cada ronda; no alteramos asignación de marcas (state.marks)
 		state.turnMark = 'X';
 		// Guardar estado actualizado
-		const id = Storage.getCurrentGameId?.() || null;
-		if (id) Storage.saveGame(id, { ...state, lastUpdated: Date.now() });
+		const id = getCurrentSessionId() || null;
+		if (id) saveState(id, { ...state, lastUpdated: Date.now() });
 		onUpdate?.(cloneState());
 		// NO programar CPU aquí - esperar evento de "juego listo"
 	}
@@ -174,8 +178,8 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 		const fresh = defaultState({ mode: state.mode, players: state.players });
 		state = fresh;
 		// Guardar estado actualizado
-		const id = Storage.getCurrentGameId?.() || null;
-		if (id) Storage.saveGame(id, { ...state, lastUpdated: Date.now() });
+		const id = getCurrentSessionId() || null;
+		if (id) saveState(id, { ...state, lastUpdated: Date.now() });
 		onUpdate?.(cloneState());
 	}
 
