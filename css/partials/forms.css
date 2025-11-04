@@ -3,8 +3,8 @@
 .player-title {
   font-family: 'Roboto', sans-serif;
   font-weight: 900;
-  font-size: var(--player-title-size);
-  line-height: calc(var(--player-title-size) * 1.2);
+  font-size: 4dvb;
+  line-height: calc(36px * 1.2);
   text-align: center;
   color: #ffffff;
   text-transform: uppercase;
@@ -13,25 +13,33 @@
   width: 100%;
 }
 
+@media (max-width: 768px) {
+  .player-title {
+    margin-bottom: 16px;
+  }
+}
+
 .input-holder {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: clamp(16px, 3vh, 24px);
   margin-top: 8px;
 }
 
 .player-input {
   width: 100%;
+  max-width: var(--button-max-width);
+  height: clamp(60px, 10vh, var(--button-height));
   background: #ffffff;
   border-radius: 12px;
   border: none;
-  padding: 20px 24px;
+  padding: 0 clamp(18px, 3vw, 24px);
   box-shadow: none;
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
-  font-size: calc(var(--player-placeholder-size) * 0.95);
+  font-size: clamp(18px, 2.2vw, 24px);
   color: #222;
 }
 
@@ -40,7 +48,7 @@
   font-family: 'Roboto', sans-serif;
   font-style: italic;
   font-weight: 100;
-  font-size: var(--player-placeholder-size);
+  font-size: clamp(18px, 2.2vw, 25px);
 }
 
 .player-continue { width: 100%; }
