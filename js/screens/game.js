@@ -105,12 +105,13 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   audioManager.playGameStart();
       setTimeout(() => {
         countdownEl.classList.add('hide');
-        boardComp.animateEntry();
+        const entryDone = boardComp.animateEntry();
+        // Retirar el elemento visual del contador tras la transición de opacidad
         setTimeout(() => {
           countdownEl.remove();
-          // IMPORTANTE: Marcar el juego como listo para permitir jugadas
-          if (game) game.markGameReady();
         }, 300);
+        // IMPORTANTE: El juego queda listo solo cuando termina la animación del tablero
+        entryDone.then(() => { if (game) game.markGameReady(); });
       }, 400);
     }
   }, 600);
@@ -120,7 +121,6 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   game = createGame({
     mode: modeStored,
     players: { player1: p1Name, player2: p2Name },
-  isCountdownActive: () => isCountdownActive,
     onUpdate: (state) => {
       boardComp.update(state);
       scoreboardComp.update(state);
@@ -130,6 +130,9 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
       const isPVC = state.mode === 'pvc';
       const scores = state.scoreboard;
       
+      // Persistir inmediatamente la partida como finalizada (doble seguridad)
+      try { markFinished(game.getState()); } catch {}
+
   // Bajar volumen de la música de fondo
   audioManager.lowerMusicVolume();
       
@@ -183,12 +186,9 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
               audioManager.playGameStart();
               setTimeout(() => {
                 countdownEl.classList.add('hide');
-                boardComp.animateEntry();
-                setTimeout(() => {
-                  countdownEl.remove();
-                  // Marcar juego como listo después del countdown
-                  game.markGameReady();
-                }, 300);
+                const entryDone = boardComp.animateEntry();
+                setTimeout(() => { countdownEl.remove(); }, 300);
+                entryDone.then(() => { game.markGameReady(); });
               }, 400);
             }
           }, 600);
@@ -214,7 +214,7 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
         // Resetear posiciones
         game.resetPositions();
         
-        // Crear y mostrar contador nuevamente
+  // Crear y mostrar contador nuevamente
         const countdownEl = document.createElement('div');
         countdownEl.className = 'game-countdown';
         countdownEl.textContent = '3';
@@ -231,12 +231,9 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
             audioManager.playGameStart();
             setTimeout(() => {
               countdownEl.classList.add('hide');
-              boardComp.animateEntry();
-              setTimeout(() => {
-                countdownEl.remove();
-                // Marcar juego como listo después del countdown
-                game.markGameReady();
-              }, 300);
+              const entryDone = boardComp.animateEntry();
+              setTimeout(() => { countdownEl.remove(); }, 300);
+              entryDone.then(() => { game.markGameReady(); });
             }, 400);
           }
         }, 600);
@@ -245,6 +242,7 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   });
 
   function onCellClicked(index) {
+    if (!game) return;
     const st = game.getState();
     if (st.finished) return;
     // En PVC, bloquear cuando es turno del CPU

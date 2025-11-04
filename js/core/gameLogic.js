@@ -34,6 +34,8 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 	const RESULT_REVEAL_DELAY = 800;
 	// Delay para el CPU (más realista)
 	const CPU_MOVE_DELAY = 800;
+	// Nuevo: Delay extendido solo para la PRIMERA jugada del CPU al iniciar o reanudar partida
+	const FIRST_CPU_MOVE_DELAY = 4000;
 	
 	// Elegir o crear partida según participantes (no finalizada)
 	const { state: existing, id: gameId } = createOrResumeGame({ mode, players });
@@ -52,6 +54,8 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 	// Timer único para el CPU
 	let cpuTimer = null;
 	let gameIsReady = false;
+	// Flag: ¿debemos aplicar el delay extendido en la PRIMERA jugada del CPU tras crear/reanudar?
+	let firstCpuMovePending = (state.mode === 'pvc') && (state.turnMark === (state.marks?.p2));
 
 	function clearCpuTimer() {
 		if (cpuTimer) { clearTimeout(cpuTimer); cpuTimer = null; }
@@ -64,12 +68,17 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 		// Verificaciones: debe estar listo, ser turno del CPU, y no terminado
 		if (!gameIsReady || !isCpuTurn() || state.finished) return;
 
+		// Elegir delay: extendido solo la primera vez tras iniciar/reanudar
+		const delay = firstCpuMovePending ? FIRST_CPU_MOVE_DELAY : CPU_MOVE_DELAY;
+		// Consumir el flag para no volver a aplicarlo en jugadas futuras
+		firstCpuMovePending = false;
+
 		// Aplicar delay humano del CPU antes de jugar
 		cpuTimer = setTimeout(() => {
 			if (!isCpuTurn() || state.finished) return;
 			const move = getRandomMove(state.board);
 			if (move >= 0) applyMove(move);
-		}, CPU_MOVE_DELAY);
+		}, delay);
 	}
 
 	function isCpuTurn() {

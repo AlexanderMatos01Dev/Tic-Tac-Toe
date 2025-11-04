@@ -28,11 +28,14 @@ export function createBoard({ onCellClick } = {}) {
 		cells.forEach((cell, i) => {
 			cell.style.setProperty('--drop-delay', `${i * 0.08}s`);
 		});
-		// Limpiar clase tras completar animación
-		setTimeout(() => {
-			board.classList.remove('board-dropping');
-			cells.forEach(cell => cell.style.removeProperty('--drop-delay'));
-		}, 1200);
+		// Devolver una promesa que resuelve cuando la animación termina
+		return new Promise(resolve => {
+			setTimeout(() => {
+				board.classList.remove('board-dropping');
+				cells.forEach(cell => cell.style.removeProperty('--drop-delay'));
+				resolve();
+			}, 1200);
+		});
 	}
 
 	function update(state) {
