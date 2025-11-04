@@ -10,9 +10,13 @@ import { renderWinPlayer } from './winPlayer.js';
 import { openRestart } from './restart.js';
 import { createBoard } from '../components/board.js';
 import { createScoreboard } from '../components/scoreboard.js';
+import { audioManager } from '../core/audioManager.js';
 
 export function renderGame(root = document.getElementById('app'), gameMode = 'pvp', players = {}) {
   if (!root) throw new Error('Contenedor principal no encontrado');
+
+  // Iniciar música de fondo
+  audioManager.startBackgroundMusic();
 
   // Robustez: si no vienen nombres por parámetro, usar sessionStorage
   const modeStored = sessionStorage.getItem('gameMode') || gameMode;
@@ -35,6 +39,7 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   backBtn.className = 'game-icon-button back';
   backBtn.innerHTML = `<img src="assets/images/Icon ionic-md-arrow-back.svg" alt="Atrás" />`;
   backBtn.addEventListener('click', () => {
+    audioManager.stopBackgroundMusic(); // Detener música al salir
     navigateTo('gameModeSelection', root);
   });
 
@@ -78,12 +83,44 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   const boardComp = createBoard({ onCellClick: (i) => onCellClicked(i) });
   gameContainer.appendChild(boardComp.wrapper);
   gameScreen.appendChild(gameContainer);
+  
+  // Variable para referencia del juego
+  let game = null;
+  
+  // Crear contador de inicio
+  const countdownEl = document.createElement('div');
+  countdownEl.className = 'game-countdown';
+  countdownEl.textContent = '3';
+  gameScreen.appendChild(countdownEl);
+  
+  // Secuencia: Mostrar contador, luego animar tablero
+  let count = 3;
+  const countInterval = setInterval(() => {
+    count--;
+    if (count > 0) {
+      countdownEl.textContent = count.toString();
+    } else {
+      countdownEl.textContent = '¡VAMOS!';
+      clearInterval(countInterval);
+      audioManager.playGameStart(); // Reproducir sonido de inicio
+      setTimeout(() => {
+        countdownEl.classList.add('hide');
+        boardComp.animateEntry();
+        setTimeout(() => {
+          countdownEl.remove();
+          // IMPORTANTE: Marcar el juego como listo para permitir jugadas
+          if (game) game.markGameReady();
+        }, 300);
+      }, 400);
+    }
+  }, 600);
   root.appendChild(gameScreen);
 
   // Estado inicial desde almacenamiento si existe
-  const game = createGame({
+  game = createGame({
     mode: modeStored,
     players: { player1: p1Name, player2: p2Name },
+    isCountdownActive: () => isCountdownActive, // Pasar función para verificar estado del contador
     onUpdate: (state) => {
       boardComp.update(state);
       scoreboardComp.update(state);
@@ -92,6 +129,23 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
     onFinish: ({ winner, reason, state }) => {
       const isPVC = state.mode === 'pvc';
       const scores = state.scoreboard;
+      
+      // Bajar volumen de la música de fondo
+      audioManager.lowerMusicVolume();
+      
+      // Reproducir sonidos según el resultado
+      if (reason === 'tie') {
+        audioManager.playTie(); // Empate usa sonido de winner
+      } else if (isPVC) {
+        if (winner === 'p1') {
+          audioManager.playWinner(); // Jugador gana contra CPU
+        } else {
+          audioManager.playGameOver(); // CPU gana (player pierde)
+        }
+      } else {
+        audioManager.playWinner(); // Cualquier jugador gana en PvP
+      }
+      
       const common = {
         scores: {
           p1Label: getInitials(state.players.p1Name),
@@ -100,8 +154,45 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
           p2Wins: scores.p2Wins,
           ties: scores.ties,
         },
-        onExit: () => { try { markFinished(game.getState()); } catch {} navigateTo('gameModeSelection', root); },
-        onNextRound: () => game.startNextRound(),
+        onExit: () => { 
+          try { markFinished(game.getState()); } catch {} 
+          audioManager.stopBackgroundMusic(); // Detener música al salir
+          navigateTo('gameModeSelection', root); 
+        },
+        onNextRound: () => {
+          // Restaurar volumen de música
+          audioManager.restoreMusicVolume();
+
+          // Iniciar la siguiente ronda
+          game.startNextRound();
+          
+          // Crear y mostrar contador para la siguiente ronda
+          const countdownEl = document.createElement('div');
+          countdownEl.className = 'game-countdown';
+          countdownEl.textContent = '3';
+          gameScreen.appendChild(countdownEl);
+          
+          let count = 3;
+          const countInterval = setInterval(() => {
+            count--;
+            if (count > 0) {
+              countdownEl.textContent = count.toString();
+            } else {
+              countdownEl.textContent = '¡VAMOS!';
+              clearInterval(countInterval);
+              audioManager.playGameStart(); // Reproducir sonido de inicio
+              setTimeout(() => {
+                countdownEl.classList.add('hide');
+                boardComp.animateEntry();
+                setTimeout(() => {
+                  countdownEl.remove();
+                  // Marcar juego como listo después del countdown
+                  game.markGameReady();
+                }, 300);
+              }, 400);
+            }
+          }, 600);
+        },
       };
 
       if (isPVC) {
@@ -117,7 +208,38 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
     openRestart(root, {
       onCancel: () => {},
       onConfirm: () => {
+        // Restaurar volumen de música
+        audioManager.restoreMusicVolume();
+
+        // Resetear posiciones
         game.resetPositions();
+        
+        // Crear y mostrar contador nuevamente
+        const countdownEl = document.createElement('div');
+        countdownEl.className = 'game-countdown';
+        countdownEl.textContent = '3';
+        gameScreen.appendChild(countdownEl);
+        
+        let count = 3;
+        const countInterval = setInterval(() => {
+          count--;
+          if (count > 0) {
+            countdownEl.textContent = count.toString();
+          } else {
+            countdownEl.textContent = '¡VAMOS!';
+            clearInterval(countInterval);
+            audioManager.playGameStart(); // Reproducir sonido de inicio
+            setTimeout(() => {
+              countdownEl.classList.add('hide');
+              boardComp.animateEntry();
+              setTimeout(() => {
+                countdownEl.remove();
+                // Marcar juego como listo después del countdown
+                game.markGameReady();
+              }, 300);
+            }, 400);
+          }
+        }, 600);
       },
     });
   });
