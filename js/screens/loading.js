@@ -61,9 +61,4 @@ export function renderLoading(root = document.getElementById('app'), { nextScree
   return { root, bg, title, progressBar, progressContainer };
 }
 
-// Auto-render si se carga directamente
-if (typeof window !== 'undefined' && document.readyState === 'complete') {
-  renderLoading();
-} else if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', () => renderLoading());
-}
+// Nota: el arranque de esta pantalla lo gestiona el screenManager/home

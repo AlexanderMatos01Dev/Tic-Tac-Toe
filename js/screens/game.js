@@ -1,6 +1,7 @@
 // Pantalla del juego principal (tablero, marcador, botones)
 import { createBackground } from '../components/background.js';
 import { navigateTo } from '../core/screenManager.js';
+import { markFinished } from '../core/sessionManager.js';
 import { createGame } from '../core/gameLogic.js';
 import { Storage } from '../core/storage.js';
 import { playMarkerSwap } from '../core/animationManager.js';
@@ -99,7 +100,7 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
           p2Wins: scores.p2Wins,
           ties: scores.ties,
         },
-        onExit: () => navigateTo('gameModeSelection', root),
+        onExit: () => { try { markFinished(game.getState()); } catch {} navigateTo('gameModeSelection', root); },
         onNextRound: () => game.startNextRound(),
       };
 

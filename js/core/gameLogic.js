@@ -52,31 +52,37 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish } = {}) {
 			// ¿alguien ganó o hubo empate?
 			const res = checkWinner(state.board);
 		if (res) {
+			// No marcar la sesión como finalizada a nivel de almacenamiento.
+			// Solo bloquear interacciones en UI con esta bandera en memoria si se requiere.
 			state.finished = true;
 			if (res.tie) {
 				state.scoreboard.ties += 1;
-					Storage.save(state);
-					onUpdate?.(cloneState());
-					// Pequeño feedback antes de anunciar
-					setTimeout(() => {
-						onFinish?.({ winner: null, reason: 'tie', state: cloneState() });
-					}, 600);
+				// Persistir con finished=false para permitir reanudación de la sesión
+				const id = Storage.getCurrentGameId?.() || null;
+				if (id) Storage.saveGame(id, { ...state, finished: false, lastUpdated: Date.now() });
+				onUpdate?.(cloneState());
+				// Pequeño feedback antes de anunciar
+				setTimeout(() => {
+					onFinish?.({ winner: null, reason: 'tie', state: cloneState() });
+				}, 600);
 				return;
 			}
 			// Ganador por marca
 			const winnerMark = res.winnerMark;
 			const winnerIsP1 = state.marks.p1 === winnerMark;
 			if (winnerIsP1) state.scoreboard.p1Wins += 1; else state.scoreboard.p2Wins += 1;
-				Storage.save(state);
-				onUpdate?.(cloneState());
-				setTimeout(() => {
-					onFinish?.({
-						winner: winnerIsP1 ? 'p1' : 'p2',
-						reason: 'win',
-						line: res.line,
-						state: cloneState(),
-					});
-				}, 600);
+			// Persistir con finished=false para permitir reanudación de la sesión
+			const id = Storage.getCurrentGameId?.() || null;
+			if (id) Storage.saveGame(id, { ...state, finished: false, lastUpdated: Date.now() });
+			onUpdate?.(cloneState());
+			setTimeout(() => {
+				onFinish?.({
+					winner: winnerIsP1 ? 'p1' : 'p2',
+					reason: 'win',
+					line: res.line,
+					state: cloneState(),
+				});
+			}, 600);
 			return;
 		}
 
