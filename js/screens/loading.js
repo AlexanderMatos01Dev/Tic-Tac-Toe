@@ -34,10 +34,14 @@ export function renderLoading(root = document.getElementById('app'), { nextScree
   content.appendChild(progressContainer);
   root.appendChild(content);
 
-  // Animar la barra inmediatamente para que transicione en 0.3s
-  setTimeout(() => {
+  // Forzar que la barra comience en 0% antes de animar
+  // Usamos requestAnimationFrame para garantizar que el DOM se haya pintado
+  requestAnimationFrame(() => {
+    // Forzar reflow para asegurar que el estilo inicial se aplique
+    progressBar.offsetWidth;
+    // Ahora agregar la clase para animar a 100%
     progressBar.classList.add('loaded');
-  }, 0);
+  });
 
   // Navegar a la siguiente pantalla después de la duración
   setTimeout(() => {

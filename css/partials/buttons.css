@@ -3,8 +3,8 @@
 .mode-buttons {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  margin-top: 12px;
+  gap: clamp(16px, 3vh, 24px);
+  margin-top: clamp(8px, 1.5vh, 12px);
   align-items: center;
   width: 100%;
 }
@@ -13,51 +13,114 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: clamp(8px, 1.5vw, 12px);
   width: 100%;
-  height: var(--button-height);
-  padding: 0 24px;
+  max-width: var(--button-max-width);
+  height: clamp(60px, 10vh, var(--button-height));
+  padding: 0 clamp(18px, 3vw, 24px);
   border: none;
-  border-radius: 12px;
+  border-radius: clamp(10px, 1.5vw, 12px);
   cursor: pointer;
   font-weight: 400;
   color: #fff;
   font-family: 'Roboto', sans-serif;
-  font-size: var(--button-font-size);
-  line-height: 28px;
+  font-size: clamp(18px, 2.5vw, var(--button-font-size));
+  line-height: 1.3;
   box-sizing: border-box;
+  transition: transform 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55), 
+              box-shadow 0.25s ease, 
+              filter 0.2s ease;
+}
+
+.mode-button:hover {
+  transform: scale(1.03) translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  filter: brightness(1.05);
+}
+
+.mode-button:active {
+  transform: scale(0.98) translateY(0);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .mode-button .icon {
-  display:inline-flex;
-  width:24px;
-  height:24px;
-  align-items:center;
-  justify-content:center;
+  display: inline-flex;
+  width: clamp(18px, 3vw, 24px);
+  height: clamp(18px, 3vw, 24px);
+  align-items: center;
+  justify-content: center;
 }
 
-.mode-button.primary { background: var(--brand-blue); }
-.mode-button.secondary { background: var(--brand-orange); }
+.mode-button.primary {
+  background: var(--brand-blue);
+}
+
+.mode-button.secondary {
+  background: var(--brand-orange);
+}
 
 /* Botones superiores del juego (Back / Restart) */
 .game-icon-button {
-  width: calc(var(--game-button-size) * var(--ui-scale));
-  height: calc(var(--game-button-size) * var(--ui-scale));
-  border-radius: 12px;
+  width: 142px;
+  height: 119px;
+  border-radius: clamp(10px, 1.5vw, 12px);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55), box-shadow 0.25s ease, filter 0.2s ease;
   flex-shrink: 0;
   z-index: 3;
+  will-change: transform;
 }
 
-.game-icon-button:hover { transform: scale(1.05); }
-.game-icon-button:active { transform: scale(0.95); }
-.game-icon-button.back { background: var(--button-back); }
-.game-icon-button.restart { background: var(--button-restart); }
-.game-icon-button svg, .game-icon-button img { width: 60%; height: 60%; display:block; }
-.game-icon-button.back { position: absolute; top: clamp(16px, 4vh, 24px); left: clamp(16px, 3vw, 40px); }
-.game-icon-button.restart { position: absolute; top: clamp(16px, 4vh, 24px); right: clamp(16px, 3vw, 40px); }
+.game-icon-button:hover {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  filter: brightness(1.1);
+}
+
+.game-icon-button:active {
+  transform: scale(0.95) translateY(1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.game-icon-button.back {
+  background: var(--button-back);
+}
+
+.game-icon-button.restart {
+  background: var(--button-restart);
+}
+
+.game-icon-button svg, .game-icon-button img {
+  width: 60%;
+  height: 60%;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.game-icon-button:hover svg,
+.game-icon-button:hover img {
+  transform: scale(1.05);
+}
+
+.game-icon-button.back {
+  position: absolute;
+  top: clamp(12px, 2.5vh, 24px);
+  left: clamp(12px, 2vw, 40px);
+}
+
+.game-icon-button.restart {
+  position: absolute;
+  top: clamp(12px, 2.5vh, 24px);
+  right: clamp(12px, 2vw, 40px);
+}
+
+@media (max-width: 768px) {
+  .game-icon-button {
+    width: clamp(80px, 18vw, 142px);
+    height: clamp(67px, 15vw, 119px);
+  }
+}

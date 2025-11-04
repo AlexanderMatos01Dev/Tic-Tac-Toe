@@ -15,8 +15,8 @@
 
 
   --ui-scale: 1;
-  --button-base-width: 511px;
-  --button-base-height: 78px;
+  --button-base-width: 495px;
+  --button-base-height: 75px;
   --button-base-font: 23px;
   --title-base-size: 69px;
   --title-base-line: 91px;
@@ -66,4 +66,30 @@
   /* Empate icon exact size */
   --empate-icon-w: 54.166px;
   --empate-icon-h: 42.243px;
+}
+
+/* Escala responsiva basada en ancho de viewport */
+@media (max-width: 1200px) {
+  :root { --ui-scale: 0.92; }
+}
+@media (max-width: 1024px) {
+  :root { --ui-scale: 0.85; }
+}
+@media (max-width: 900px) {
+  :root { --ui-scale: 0.8; }
+}
+@media (max-width: 768px) {
+  :root { --ui-scale: 0.75; }
+}
+@media (max-width: 650px) {
+  :root { --ui-scale: 0.7; }
+}
+@media (max-width: 560px) {
+  :root { --ui-scale: 0.65; }
+}
+@media (max-width: 480px) {
+  :root { --ui-scale: 0.6; }
+}
+@media (max-width: 400px) {
+  :root { --ui-scale: 0.55; }
 }
