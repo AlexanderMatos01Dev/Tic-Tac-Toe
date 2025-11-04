@@ -75,26 +75,37 @@
 }
 
 .win-modal__trophy {
-  width: 176px; height: 197px;
-  background: transparent no-repeat padding-box;
-  background-size: contain; background-position: center top;
-  margin-top: 0; margin-bottom: 35px;
   position: relative;
+  width: 176px;
+  height: 197px;
+  margin-top: 0;
+  margin-bottom: 35px;
 }
 
-/* Brillo sutil debajo del trofeo / imagen de pérdida */
-.win-modal__trophy::after {
+/* Glow circular detrás del trofeo/imagen (halo) */
+.win-modal__trophy::before {
   content: '';
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
-  bottom: -10px;
-  width: 140px;
-  height: 22px;
-  background: radial-gradient(ellipse at center, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0) 70%);
-  filter: blur(1px);
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.16) 52%, rgba(255,255,255,0) 82%);
+  filter: blur(28px);
   opacity: 0.9;
   pointer-events: none;
+}
+
+.win-modal__trophy-img {
+  position: relative;
+  z-index: 1;
+  width: 176px;
+  height: 197px;
+  background: transparent no-repeat padding-box;
+  background-size: contain;
+  background-position: center top;
 }
 
 .win-modal__title { width:100%; text-align:center; font-family:'Roboto', sans-serif; font-weight:700; font-size:48px; color:#fff; letter-spacing:1px; margin-bottom:0; }

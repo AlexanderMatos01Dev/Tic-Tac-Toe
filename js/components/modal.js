@@ -15,17 +15,20 @@ export function createWinModal({
 	const modal = document.createElement('div');
 	modal.className = 'win-modal';
 
-	// Trophy centrado
-		const trophy = document.createElement('div');
-		trophy.className = 'win-modal__trophy';
+	// Trophy centrado con wrapper para glow detrás
+		const trophyWrap = document.createElement('div');
+		trophyWrap.className = 'win-modal__trophy';
+		const trophyImg = document.createElement('div');
+		trophyImg.className = 'win-modal__trophy-img';
 		// Permite cambiar la imagen central según el resultado
 		if (trophyImage) {
-			trophy.style.backgroundImage = `url('${trophyImage}')`;
-			trophy.style.backgroundRepeat = 'no-repeat';
-			trophy.style.backgroundPosition = 'center top';
-			trophy.style.backgroundSize = 'contain';
+			trophyImg.style.backgroundImage = `url('${trophyImage}')`;
+			trophyImg.style.backgroundRepeat = 'no-repeat';
+			trophyImg.style.backgroundPosition = 'center top';
+			trophyImg.style.backgroundSize = 'contain';
 		}
-	modal.appendChild(trophy);
+		trophyWrap.appendChild(trophyImg);
+	modal.appendChild(trophyWrap);
 
 	// Títulos
 	const title = document.createElement('div');
