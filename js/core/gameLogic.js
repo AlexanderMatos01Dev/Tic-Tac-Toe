@@ -17,7 +17,7 @@ function defaultState({ mode = 'pvp', players }) {
 		// roundIndex alterna marcas entre rondas para que nadie repita círculo seguidamente
 		roundIndex: 0,
 		marks: { p1: 'X', p2: 'O' },
-		turnMark: randomStart, // Empieza aleatoriamente X o O
+		turnMark: randomStart,
 		finished: false,
 		lastUpdated: Date.now(),
 	};
@@ -31,9 +31,9 @@ function recomputeMarks(state) {
 
 export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameReady } = {}) {
 	// Pequeño retardo antes de mostrar la pantalla/modal de resultado
-	const RESULT_REVEAL_DELAY = 800; // ms
+	const RESULT_REVEAL_DELAY = 800;
 	// Delay para el CPU (más realista)
-	const CPU_MOVE_DELAY = 800; // ms
+	const CPU_MOVE_DELAY = 800;
 	
 	// Elegir o crear partida según participantes (no finalizada)
 	const { state: existing, id: gameId } = createOrResumeGame({ mode, players });
@@ -51,7 +51,7 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 
 	// Timer único para el CPU
 	let cpuTimer = null;
-	let gameIsReady = false; // El juego NO está listo hasta que termine el countdown
+	let gameIsReady = false;
 
 	function clearCpuTimer() {
 		if (cpuTimer) { clearTimeout(cpuTimer); cpuTimer = null; }
@@ -138,7 +138,7 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 		state.roundIndex += 1;
 		state.board = Array(9).fill(null);
 		state.finished = false;
-		gameIsReady = false; // Bloquear hasta que termine el countdown
+		gameIsReady = false;
 		recomputeMarks(state);
 		// Guardar estado actualizado
 		const id = Storage.getCurrentGameId?.() || null;
@@ -151,7 +151,7 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 		// Reinicia SOLO las posiciones de la ronda actual sin tocar historial, nombres ni roundIndex
 		state.board = Array(9).fill(null);
 		state.finished = false;
-		gameIsReady = false; // Bloquear hasta que termine el countdown
+		gameIsReady = false;
 		// Siempre inicia 'X' en cada ronda; no alteramos asignación de marcas (state.marks)
 		state.turnMark = 'X';
 		// Guardar estado actualizado
@@ -194,7 +194,7 @@ export function createGame({ mode = 'pvp', players, onUpdate, onFinish, onGameRe
 		startNextRound,
 		resetAll,
 		resetPositions,
-		markGameReady, // NUEVA función para indicar que el countdown terminó
+		markGameReady,
 	};
 }
 

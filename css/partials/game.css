@@ -58,9 +58,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Posicionar arriba por defecto */
+  justify-content: flex-start;
   gap: clamp(12px, 2vh, 20px);
-  padding: clamp(20px, 3vh, 32px) 0 0; /* Padding superior controlado */
+  padding: clamp(20px, 3vh, 32px) 0 0;
   box-sizing: border-box;
   position: relative;
 }
@@ -190,10 +190,10 @@
 .game-scoreboard {
   display: flex;
   justify-content: space-around;
-  align-items: flex-end; /* Alinear al final (abajo) */
+  align-items: flex-end;
   width: 100%;
   max-width: 100%;
-  padding: 0 clamp(16px, 3vw, 24px); /* Sin padding superior */
+  padding: 0 clamp(16px, 3vw, 24px);
   color: white;
   font-family: 'Roboto', sans-serif;
   box-sizing: border-box;
@@ -203,11 +203,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end; /* Empujar contenido hacia abajo */
+  justify-content: flex-end;
   gap: 0;
   flex: 0 1 auto;
   min-width: 0;
-  min-height: clamp(80px, 15vh, 120px); /* Altura mínima para que haya espacio */
+  min-height: clamp(80px, 15vh, 120px);
 }
 
 /* Asegurar que el header tenga altura consistente incluso si está vacío */
@@ -222,7 +222,7 @@
 /* El icono ocupa el lugar del header para mantener alineación */
 .score-icon {
   width: clamp(36px, 7vw, calc(var(--empate-icon-w) * var(--ui-scale)));
-  height: clamp(28px, 5.5vw, 36px); /* Misma altura que el min-height del header */
+  height: clamp(28px, 5.5vw, 36px);
   margin-bottom: 0;
   flex-shrink: 0;
   display: flex;
@@ -340,13 +340,13 @@
 /* Media queries para alineación del scoreboard en pantallas pequeñas y medianas */
 @media (max-width: 768px) {
   .game-container {
-    justify-content: flex-start; /* Posicionar más arriba en tablets */
-    padding: clamp(12px, 2vh, 20px) 0 0; /* Menos padding superior en tablets */
-    gap: clamp(10px, 1.5vh, 16px); /* Menos espacio entre elementos */
+    justify-content: flex-start;
+    padding: clamp(12px, 2vh, 20px) 0 0;
+    gap: clamp(10px, 1.5vh, 16px);
   }
   
   .game-scoreboard {
-    padding: 0 clamp(12px, 2.5vw, 20px); /* Sin padding superior */
+    padding: 0 clamp(12px, 2.5vw, 20px);
     justify-content: space-evenly;
     gap: clamp(8px, 2vw, 16px);
   }
@@ -361,7 +361,7 @@
   }
   
   .score-icon {
-    height: clamp(24px, 5vw, 32px); /* Misma altura que header en tablets */
+    height: clamp(24px, 5vw, 32px);
   }
   
   .score-header {
@@ -371,18 +371,14 @@
 }
 @media (max-width: 480px) {
   .game-container {
-    justify-content: flex-start; /* Posicionar más arriba en móviles */
-    padding: clamp(10px, 1.5vh, 16px) 0 0; /* Menos padding superior en móviles */
-    gap: clamp(8px, 1.2vh, 14px); /* Menos espacio entre elementos */
-    padding: clamp(16px, 2.5vh, 24px) 0 0; /* Padding superior para control */
+    justify-content: flex-start;
+    padding: clamp(10px, 1.5vh, 16px) 0 0;
+    gap: clamp(8px, 1.2vh, 14px);
   }
-}
-  
   .game-scoreboard {
-    padding: 0 clamp(8px, 2vw, 16px); /* Sin padding superior */
+    padding: 0 clamp(8px, 2vw, 16px);
     gap: clamp(4px, 1vw, 12px);
   }
-@media (max-width: 480px) {
   .score-item {
     flex: 1 1 0;
     max-width: 33%;
@@ -393,7 +389,7 @@
   }
   
   .score-icon {
-    height: clamp(20px, 4.5vw, 28px); /* Misma altura que header en móviles */
+    height: clamp(20px, 4.5vw, 28px);
   }
   
   .score-header {

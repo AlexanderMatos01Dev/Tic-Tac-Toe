@@ -1,13 +1,13 @@
 // Componente reutilizable para el fondo de pantalla con variantes por dispositivo
 export function createBackground(options = {}) {
   const {
-    imagePath, // compat: si viene, se usa como desktop
+    imagePath,
     imageDesktop = imagePath || 'assets/images/Background-Image.png',
     imageTablet = 'assets/images/Background-image-tablet.png',
     imagePhone = 'assets/images/Background-image-phone.png',
     alt = '',
     className = '',
-    breakpoints = { phone: 600, tablet: 1024 } // <600 phone, <1024 tablet, else desktop
+    breakpoints = { phone: 600, tablet: 1024 }
   } = options;
 
   const el = document.createElement('div');

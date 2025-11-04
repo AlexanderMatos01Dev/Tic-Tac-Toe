@@ -54,12 +54,12 @@ export function createBoard({ onCellClick } = {}) {
 					cell.innerHTML = `<img src="assets/images/Ellipse 20.svg" alt="O" />`;
 				}
 				
-				// Añadir animación solo si es una ficha nueva
-				if (isNewlyPlaced) {
-					cell.classList.add('placed');
-					audioManager.playClick(); // Reproducir sonido de click
-					setTimeout(() => cell.classList.remove('placed'), 600);
-				}
+					// Añadir animación solo si es una ficha nueva
+					if (isNewlyPlaced) {
+						cell.classList.add('placed');
+						audioManager.playClick();
+						setTimeout(() => cell.classList.remove('placed'), 600);
+					}
 			}
 		}
 	}

@@ -12,7 +12,7 @@ class AudioManager {
     
     // Configurar música de fondo
     this.sounds.bgMusic.loop = true;
-    this.sounds.bgMusic.volume = 0.3; // 30% (bajado de 50%)
+  this.sounds.bgMusic.volume = 0.3;
     
     // Volumen de efectos de sonido
     this.sounds.click.volume = 0.7;
@@ -73,12 +73,12 @@ class AudioManager {
   
   // Bajar volumen de música cuando termina la partida
   lowerMusicVolume() {
-    this.sounds.bgMusic.volume = 0.15; // Bajar a 15%
+    this.sounds.bgMusic.volume = 0.15;
   }
   
   // Restaurar volumen normal de música
   restoreMusicVolume() {
-    this.sounds.bgMusic.volume = 0.3; // Volver a 30%
+    this.sounds.bgMusic.volume = 0.3;
   }
 }
 

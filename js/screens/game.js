@@ -39,7 +39,7 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   backBtn.className = 'game-icon-button back';
   backBtn.innerHTML = `<img src="assets/images/Icon ionic-md-arrow-back.svg" alt="Atrás" />`;
   backBtn.addEventListener('click', () => {
-    audioManager.stopBackgroundMusic(); // Detener música al salir
+    audioManager.stopBackgroundMusic();
     navigateTo('gameModeSelection', root);
   });
 
@@ -102,7 +102,7 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
     } else {
       countdownEl.textContent = '¡VAMOS!';
       clearInterval(countInterval);
-      audioManager.playGameStart(); // Reproducir sonido de inicio
+  audioManager.playGameStart();
       setTimeout(() => {
         countdownEl.classList.add('hide');
         boardComp.animateEntry();
@@ -120,7 +120,7 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   game = createGame({
     mode: modeStored,
     players: { player1: p1Name, player2: p2Name },
-    isCountdownActive: () => isCountdownActive, // Pasar función para verificar estado del contador
+  isCountdownActive: () => isCountdownActive,
     onUpdate: (state) => {
       boardComp.update(state);
       scoreboardComp.update(state);
@@ -130,20 +130,20 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
       const isPVC = state.mode === 'pvc';
       const scores = state.scoreboard;
       
-      // Bajar volumen de la música de fondo
-      audioManager.lowerMusicVolume();
+  // Bajar volumen de la música de fondo
+  audioManager.lowerMusicVolume();
       
       // Reproducir sonidos según el resultado
       if (reason === 'tie') {
-        audioManager.playTie(); // Empate usa sonido de winner
+  audioManager.playTie();
       } else if (isPVC) {
         if (winner === 'p1') {
-          audioManager.playWinner(); // Jugador gana contra CPU
+          audioManager.playWinner();
         } else {
-          audioManager.playGameOver(); // CPU gana (player pierde)
+          audioManager.playGameOver();
         }
       } else {
-        audioManager.playWinner(); // Cualquier jugador gana en PvP
+  audioManager.playWinner();
       }
       
       const common = {
@@ -156,7 +156,7 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
         },
         onExit: () => { 
           try { markFinished(game.getState()); } catch {} 
-          audioManager.stopBackgroundMusic(); // Detener música al salir
+          audioManager.stopBackgroundMusic();
           navigateTo('gameModeSelection', root); 
         },
         onNextRound: () => {
@@ -180,7 +180,7 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
             } else {
               countdownEl.textContent = '¡VAMOS!';
               clearInterval(countInterval);
-              audioManager.playGameStart(); // Reproducir sonido de inicio
+              audioManager.playGameStart();
               setTimeout(() => {
                 countdownEl.classList.add('hide');
                 boardComp.animateEntry();
@@ -228,7 +228,7 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
           } else {
             countdownEl.textContent = '¡VAMOS!';
             clearInterval(countInterval);
-            audioManager.playGameStart(); // Reproducir sonido de inicio
+            audioManager.playGameStart();
             setTimeout(() => {
               countdownEl.classList.add('hide');
               boardComp.animateEntry();
