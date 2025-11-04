@@ -72,10 +72,28 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   gameContainer.className = 'game-container';
   
 
-  // Marcador (arriba del tablero) usando componente reusable
+  // Calcular base histórica desde localStorage (pareja independiente del orden)
+  let base = { p1Wins: 0, p2Wins: 0, ties: 0 };
+  try {
+    const summary = Storage.getPairSummary(p1Name, p2Name);
+    if (summary) {
+      const modeKey = modeStored;
+      const block = summary.modes?.[modeKey] || null;
+      const winsMap = (block?.wins) || (summary.totals?.wins) || {};
+      const tiesVal = (block?.ties) ?? (summary.totals?.ties ?? 0);
+      base = {
+        p1Wins: winsMap[p1Name] || 0,
+        p2Wins: winsMap[p2Name] || 0,
+        ties: tiesVal || 0,
+      };
+    }
+  } catch (e) { console.warn('No se pudo leer resumen histórico', e); }
+
+  // Marcador (arriba del tablero) usando componente reusable con base histórica
   const scoreboardComp = createScoreboard({
     p1Label: getInitials(p1Name),
-    p2Label: modeStored === 'pvc' ? 'CPU' : getInitials(p2Name)
+    p2Label: modeStored === 'pvc' ? 'CPU' : getInitials(p2Name),
+    base,
   });
   gameContainer.appendChild(scoreboardComp.element);
 
@@ -132,6 +150,14 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
       
       // Persistir inmediatamente la partida como finalizada (doble seguridad)
       try { markFinished(game.getState()); } catch {}
+
+      // Actualizar resumen por pareja (orden invariante) en localStorage
+      try {
+        const p1Name = state.players?.p1Name || 'Jugador 1';
+        const p2Name = state.players?.p2Name || (isPVC ? 'CPU' : 'Jugador 2');
+        const winnerName = reason === 'win' ? (winner === 'p1' ? p1Name : p2Name) : null;
+        Storage.updatePairSummary({ mode: state.mode, p1Name, p2Name, winnerName, reason });
+      } catch (e) { console.warn('No se pudo actualizar el resumen de pareja', e); }
 
   // Bajar volumen de la música de fondo
   audioManager.lowerMusicVolume();

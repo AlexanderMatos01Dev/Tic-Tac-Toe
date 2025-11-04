@@ -1,13 +1,11 @@
 // Componente del marcador (jugadores y puntuaciones)
 
-import { Storage } from '../core/storage.js';
-
 /**
  * Crea el componente de marcador con 3 columnas: P1, P2 y Empates.
  * Devuelve { element, update } donde update(state) refresca los valores.
- * @param {{ p1Label: string, p2Label: string, initial?: {p1Wins:number,p2Wins:number,ties:number} }} opts
+ * @param {{ p1Label: string, p2Label: string, base?: {p1Wins:number,p2Wins:number,ties:number} }} opts
  */
-export function createScoreboard({ p1Label = '', p2Label = '', initial } = {}) {
+export function createScoreboard({ p1Label = '', p2Label = '', base } = {}) {
 	const root = document.createElement('div');
 	root.className = 'game-scoreboard';
 
@@ -53,21 +51,27 @@ export function createScoreboard({ p1Label = '', p2Label = '', initial } = {}) {
 	root.appendChild(p2.item);
 	root.appendChild(ties.item);
 
-	// Inicializar con persistencia si hay un currentGameId guardado
-	const persisted = Storage.load();
-	const initialScores = initial || persisted?.scoreboard || { p1Wins: 0, p2Wins: 0, ties: 0 };
-	p1.subEl.textContent = `${initialScores.p1Wins} GANADAS`;
-	p2.subEl.textContent = `${initialScores.p2Wins} GANADAS`;
-	ties.subEl.textContent = `${initialScores.ties} EMPATES`;
+    // Base acumulada (histórico) sobre la que sumaremos el scoreboard de la sesión actual
+    let baseScores = base || { p1Wins: 0, p2Wins: 0, ties: 0 };
+    p1.subEl.textContent = `${baseScores.p1Wins} GANADAS`;
+    p2.subEl.textContent = `${baseScores.p2Wins} GANADAS`;
+    ties.subEl.textContent = `${baseScores.ties} EMPATES`;
 
 	function update(state) {
 		const s = state?.scoreboard || { p1Wins: 0, p2Wins: 0, ties: 0 };
-		p1.subEl.textContent = `${s.p1Wins} GANADAS`;
-		p2.subEl.textContent = `${s.p2Wins} GANADAS`;
-		ties.subEl.textContent = `${s.ties} EMPATES`;
+		const sumP1 = (baseScores.p1Wins || 0) + (s.p1Wins || 0);
+		const sumP2 = (baseScores.p2Wins || 0) + (s.p2Wins || 0);
+		const sumTies = (baseScores.ties || 0) + (s.ties || 0);
+		p1.subEl.textContent = `${sumP1} GANADAS`;
+		p2.subEl.textContent = `${sumP2} GANADAS`;
+		ties.subEl.textContent = `${sumTies} EMPATES`;
 	}
 
-	return { element: root, update };
+	function setBase(newBase) {
+		baseScores = newBase || { p1Wins: 0, p2Wins: 0, ties: 0 };
+	}
+
+	return { element: root, update, setBase };
 }
 
 export default { createScoreboard };
