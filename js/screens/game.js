@@ -1,9 +1,10 @@
 // Pantalla del juego principal (tablero, marcador, botones)
 import { createBackground } from '../components/background.js';
 import { navigateTo } from '../core/screenManager.js';
-import { markFinished } from '../core/sessionManager.js';
+import { markFinished, getCurrentSessionId, createOrResumeGame } from '../core/sessionManager.js';
 import { createGame } from '../core/gameLogic.js';
-import { Storage } from '../core/storage.js';
+import Storage from '../core/storage.js';
+import { slugifyKeepCase } from '../core/utils.js';
 import { playMarkerSwap } from '../core/animationManager.js';
 import { renderWinCpu } from './winCpu.js';
 import { renderWinPlayer } from './winPlayer.js';
@@ -18,10 +19,25 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   // Iniciar música de fondo
   audioManager.startBackgroundMusic();
 
-  // Robustez: si no vienen nombres por parámetro, usar sessionStorage
+  // Robustez: si no vienen nombres por parámetro, usar sessionStorage o estado guardado
   const modeStored = sessionStorage.getItem('gameMode') || gameMode;
-  const p1Name = players.player1 || sessionStorage.getItem('player1') || 'Jugador 1';
-  const p2Default = modeStored === 'pvc' ? (sessionStorage.getItem('player2') || 'CPU') : (sessionStorage.getItem('player2') || 'Jugador 2');
+  
+  // Verificar si hay una sesión actual para reanudar
+  const currentSessionId = getCurrentSessionId();
+  let existingSession = null;
+  if (currentSessionId) {
+    existingSession = Storage.sessions.load(currentSessionId);
+    console.log('Sesión actual encontrada:', currentSessionId, existingSession?.finished ? 'finalizada' : 'activa');
+  }
+  
+  // Usar nombres del estado guardado si existe, sino de sessionStorage
+  const p1Name = players.player1 || 
+                 (existingSession?.players?.p1Name) || 
+                 sessionStorage.getItem('player1') || 
+                 'Jugador 1';
+  const p2Default = modeStored === 'pvc' ? 
+                   ((existingSession?.players?.p2Name) || sessionStorage.getItem('player2') || 'CPU') : 
+                   ((existingSession?.players?.p2Name) || sessionStorage.getItem('player2') || 'Jugador 2');
   const p2Name = players.player2 || p2Default;
 
   root.innerHTML = '';
@@ -75,15 +91,13 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   // Calcular base histórica desde localStorage (pareja independiente del orden)
   let base = { p1Wins: 0, p2Wins: 0, ties: 0 };
   try {
-    const summary = Storage.getPairSummary(p1Name, p2Name);
+    const summary = Storage.pairs.get(p1Name, p2Name);
     if (summary) {
-      const modeKey = modeStored;
-      const block = summary.modes?.[modeKey] || null;
-      const winsMap = (block?.wins) || (summary.totals?.wins) || {};
-      const tiesVal = (block?.ties) ?? (summary.totals?.ties ?? 0);
+      const winsMap = summary.wins || {};
+      const tiesVal = summary.ties || 0;
       base = {
-        p1Wins: winsMap[p1Name] || 0,
-        p2Wins: winsMap[p2Name] || 0,
+        p1Wins: getWinCountForName(winsMap, p1Name),
+        p2Wins: getWinCountForName(winsMap, p2Name),
         ties: tiesVal || 0,
       };
     }
@@ -136,6 +150,10 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
   root.appendChild(gameScreen);
 
   // Estado inicial desde almacenamiento si existe
+  const isResumed = !!existingSession;
+  if (isResumed) {
+    console.log('🎮 Partida reanudada - posiciones y turnos restaurados');
+  }
   game = createGame({
     mode: modeStored,
     players: { player1: p1Name, player2: p2Name },
@@ -149,14 +167,17 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
       const scores = state.scoreboard;
       
       // Persistir inmediatamente la partida como finalizada (doble seguridad)
-      try { markFinished(game.getState()); } catch {}
+      try { 
+        const gameId = getCurrentSessionId();
+        if (gameId) markFinished(gameId, game.getState()); 
+      } catch {}
 
       // Actualizar resumen por pareja (orden invariante) en localStorage
       try {
         const p1Name = state.players?.p1Name || 'Jugador 1';
         const p2Name = state.players?.p2Name || (isPVC ? 'CPU' : 'Jugador 2');
         const winnerName = reason === 'win' ? (winner === 'p1' ? p1Name : p2Name) : null;
-        Storage.updatePairSummary({ mode: state.mode, p1Name, p2Name, winnerName, reason });
+        Storage.pairs.updateStats(p1Name, p2Name, winnerName, reason === 'tie');
       } catch (e) { console.warn('No se pudo actualizar el resumen de pareja', e); }
 
   // Bajar volumen de la música de fondo
@@ -184,7 +205,10 @@ export function renderGame(root = document.getElementById('app'), gameMode = 'pv
           ties: scores.ties,
         },
         onExit: () => { 
-          try { markFinished(game.getState()); } catch {} 
+          try { 
+            const gameId = getCurrentSessionId();
+            if (gameId) markFinished(gameId, game.getState()); 
+          } catch {} 
           audioManager.stopBackgroundMusic();
           navigateTo('gameModeSelection', root); 
         },
@@ -350,4 +374,16 @@ function getInitials(name) {
   const first = parts[0]?.[0] || '';
   const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
   return (first + last).toUpperCase();
+}
+
+function getWinCountForName(map, name) {
+  if (!map || !name) return 0;
+  if (map[name] != null) return map[name] || 0;
+  const target = slugifyKeepCase(name).toLowerCase();
+  for (const [key, value] of Object.entries(map)) {
+    if (slugifyKeepCase(key).toLowerCase() === target) {
+      return value || 0;
+    }
+  }
+  return 0;
 }
